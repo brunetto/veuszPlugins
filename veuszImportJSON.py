@@ -1,4 +1,5 @@
 import json
+import numpy as np
 from veusz.plugins import *
 
 class ImportJSON(ImportPlugin):
@@ -28,11 +29,19 @@ class ImportJSON(ImportPlugin):
         """
         f = params.openFileWithEncoding()
         data = []
+        errbar = None
         tmp = json.load(f)
         for name, value in iter(sorted(tmp.iteritems())):
-            data.append(ImportDataset1D(name, value))
-            print name, len(value), len(data)
+			if name.endswith("errbar"):
+				errbar=value
+				continue
+			elif name.endswith("y"):
+				data.append(ImportDataset1D(name=name, data=value, serr=errbar))
+				errbar=None
+				continue
+			else:
+				data.append(ImportDataset1D(name, value))
         return data
 
 # add the class to the registry. An instance also works, but is deprecated
-importpluginregistry.append(ImportPluginExample)
+importpluginregistry.append(ImportJSON)
