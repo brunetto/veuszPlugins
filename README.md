@@ -1,0 +1,2 @@
+# veuszPlugins
+My Veusz plugins
