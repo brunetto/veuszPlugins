@@ -35,7 +35,7 @@ class ImportJSON(ImportPlugin):
 			if name.endswith("errbar"):
 				errbar=value
 				continue
-			elif name.endswith("y"):
+			elif name.endswith("-witherr"):
 				data.append(ImportDataset1D(name=name, data=value, serr=errbar))
 				errbar=None
 				continue
