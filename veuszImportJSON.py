@@ -40,7 +40,12 @@ class ImportJSON(ImportPlugin):
 				errbar=None
 				continue
 			else:
-				data.append(ImportDataset1D(name, value))
+				print value
+				print type(value[0])
+				if type(value[0]) in [str, unicode]:
+					data.append(ImportDatasetText(name, value))
+				else:
+					data.append(ImportDataset1D(name, value))
         return data
 
 # add the class to the registry. An instance also works, but is deprecated
