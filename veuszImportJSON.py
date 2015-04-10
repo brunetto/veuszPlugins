@@ -1,4 +1,4 @@
-import json
+import json, sys
 import numpy as np
 from veusz.plugins import *
 
@@ -15,7 +15,7 @@ class ImportJSON(ImportPlugin):
     promote_tab='LoadJSON'
 
     file_extensions = set(['.json'])
-
+    
     def __init__(self):
         ImportPlugin.__init__(self)
         self.fields = [
@@ -31,7 +31,10 @@ class ImportJSON(ImportPlugin):
         data = []
         errbar = None
         tmp = json.load(f)
-        for name, value in iter(sorted(tmp.iteritems())):
+        #for name, value in iter(sorted(tmp.iteritems())):
+        # This is to be compatible with both python 2 and 3 
+        # and run with both veusz qt4 and qt5s
+        for name, value in iter(sorted(((key,tmp[key]) for key in tmp))):
             if name.endswith("errbar"):
                 errbar=value
                 data.append(ImportDataset1D(name=name, data=value))
@@ -41,9 +44,16 @@ class ImportJSON(ImportPlugin):
                 errbar=None
                 continue
             else:
-                print(value)
-                print(type(value[0]))
-                if type(value[0]) in [str, unicode]:
+                #print(value)
+                #print(type(value[0]))
+                # This is to be compatible with both python 2 and 3 
+                # and run with both veusz qt4 and qt5s
+                if sys.version < '3':
+                    str_types = [str, unicode]
+                else:
+                    str_types = [str, bytes]
+                
+                if type(value[0]) in str_types:
                     data.append(ImportDatasetText(name, value))
                 else:
                     data.append(ImportDataset1D(name, value))
