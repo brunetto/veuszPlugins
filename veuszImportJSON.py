@@ -52,11 +52,13 @@ class ImportJSON(ImportPlugin):
                     str_types = [str, unicode]
                 else:
                     str_types = [str, bytes]
-                
-                if type(value[0]) in str_types:
-                    data.append(ImportDatasetText(name, value))
-                else:
-                    data.append(ImportDataset1D(name, value))
+                try:
+                    if type(value[0]) in str_types:
+                        data.append(ImportDatasetText(name, value))
+                    else:
+                        data.append(ImportDataset1D(name, value))
+                except:
+					continue
         return data
 
 # add the class to the registry. An instance also works, but is deprecated
